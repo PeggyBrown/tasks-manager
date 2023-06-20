@@ -8,14 +8,14 @@ namespace TaskManager
         public List<TrelloList> Lists { get; set; }
     }
 
-    class TrelloList
+    public class TrelloList
     {
         public string Id { get; set; }
         public string Name { get; set; }
         public List<TrelloTask> Tasks { get; set; }
     }
 
-    class TrelloTask
+    public class TrelloTask
     {
         public string Id { get; set; }
         public string Name { get; set; }

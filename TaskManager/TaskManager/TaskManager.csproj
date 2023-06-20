@@ -73,11 +73,13 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="ApiHelper.cs" />
-        <Compile Include="DTO.cs" />
+        <Compile Include="Logic\ApiHelper.cs" />
+        <Compile Include="Logic\DTO.cs" />
+        <Compile Include="Logic\FilesHelper.cs" />
+        <Compile Include="Logic\RequestSender.cs" />
+        <Compile Include="Logic\TasksReader.cs" />
         <Compile Include="Program.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
-        <Compile Include="TasksReader.cs" />
     </ItemGroup>
     <ItemGroup>
       <None Include="packages.config" />
