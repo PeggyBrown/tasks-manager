@@ -1,0 +1,35 @@
+{
+  "Name": "Kanban Board",
+  "Lists": [
+    {
+      "Name": "Backlog",
+      "Tasks": [
+        {
+          "Name": "Task 1"
+        },
+        {
+          "Name": "Task 2"
+        }
+      ]
+    },
+    {
+      "Name": "Design",
+      "Tasks": [
+        {
+          "Name": "Task 3"
+        },
+        {
+          "Name": "Task 4"
+        }
+      ]
+    },
+    {
+      "Name": "Done",
+      "Tasks": [
+        {
+          "Name": "Task 5"
+        }
+      ]
+    }
+  ]
+}

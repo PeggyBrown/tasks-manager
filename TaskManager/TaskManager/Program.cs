@@ -1,12 +1,8 @@
-﻿using System;
-
-namespace TaskManager
+﻿class Program
 {
-    static class Program
+    static void Main()
     {
-        static void Main(string[] args)
-        {
-            Console.WriteLine("Hello, this is TaskManager!");
-        }
+        TasksReader tasksReader = new TasksReader(new ApiHelper());
+        tasksReader.PrepareTasksFromFile();
     }
 }
