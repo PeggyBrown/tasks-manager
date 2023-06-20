@@ -1,49 +1,84 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json;
-using TaskManager;
 
-class TasksReader
+namespace TaskManager
 {
-    private readonly ApiHelper _apiHelper;
-
-    public TasksReader(ApiHelper apiHelper)
+    class TasksReader
     {
-        _apiHelper = apiHelper;
-    }
+        private readonly ApiHelper _apiHelper;
+        private const string BoardId = "64905ce37ca84c01968da431";
+        private const string DefaultListId = "64905ce37ca84c01968da438";
+        private const string JsonFilePath = "input.json";
+        private static readonly List<string> TasksToLeave = new List<string>(){
+            "64905ce37ca84c01968da4c4", 
+            "64905ce37ca84c01968da4c6", 
+            "64905ce37ca84c01968da4c8",
+            "64905ce37ca84c01968da4ca",
+            "64905ce37ca84c01968da4ce",
+            "64905ce37ca84c01968da4d0",
+            "64905ce37ca84c01968da4cc",
+            "649169edf1024f64920a2f36"
+        };
 
-    public void PrepareTasksFromFile()
-    {
-        string jsonFilePath = "input.json"; // Update with your JSON file path
-
-        // Read JSON from file
-        string json = File.ReadAllText(jsonFilePath);
-
-        try
+        public TasksReader(ApiHelper apiHelper)
         {
-            // Deserialize JSON into objects
-            Board board = JsonConvert.DeserializeObject<Board>(json);
+            _apiHelper = apiHelper;
+        }
 
-            // Access and display the parsed objects
-            Console.WriteLine("Board Name: " + board.Name);
-            Console.WriteLine();
+        public void PrepareTasksFromFile()
+        {
+            string json = File.ReadAllText(JsonFilePath);
 
-            foreach (var list in board.Lists)
+            try
             {
-                Console.WriteLine("List Name: " + list.Name);
+                TrelloBoard trelloBoard = JsonConvert.DeserializeObject<TrelloBoard>(json);
 
-                foreach (var task in list.Tasks)
-                {
-                    Console.WriteLine("Task Name: " + task.Name);
-                    _apiHelper.AddTaskToTrello("64905ce37ca84c01968da438", task.Name);
-                }
+                var allTasksFromBoard = _apiHelper.ReadAllTasksFromBoard(BoardId).Result;
+                var allListsFromBoard = _apiHelper.ReadAllListsFromBoard(BoardId).Result;
 
-                Console.WriteLine();
+                var inputLists = trelloBoard?.Lists;
+                inputLists.ForEach(t => t.Id = allListsFromBoard.FirstOrDefault(l => l.Name.Equals(t.Name))?.Id);
+                inputLists.ForEach(l =>
+                    l.Tasks.ForEach(t => t.ListId = l.Id));
+                var tasksFromFile = inputLists.SelectMany(l => l.Tasks).ToList();
+                CreateMissingTasks(tasksFromFile, allTasksFromBoard);
+                HandleObsoleteTasks(allTasksFromBoard, tasksFromFile, true);
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine("Error parsing JSON: " + ex.Message);
             }
         }
-        catch (JsonException ex)
+
+        private void HandleObsoleteTasks(List<TrelloTask> allTasksFromBoard, 
+            IList<TrelloTask> tasksFromFile,
+            bool shouldDeleteObsoleteTasks)
         {
-            Console.WriteLine("Error parsing JSON: " + ex.Message);
+            foreach (var task in allTasksFromBoard.Where(t => !TasksToLeave.Contains(t.Id)))
+            {
+                if (!tasksFromFile.Select(t => t.Name).Contains(task.Name))
+                {
+                    Console.WriteLine("Obsolete task: " + task.Name);
+                    if (shouldDeleteObsoleteTasks)
+                    {
+                        _apiHelper.RemoveTaskFromTrello(task.Id);
+                    }
+                }
+            }
+        }
+
+        private void CreateMissingTasks(List<TrelloTask> tasksFromFile, List<TrelloTask> allTasksFromBoard)
+        {
+            foreach (var task in tasksFromFile)
+            {
+                if (!allTasksFromBoard.Select(t => t.Name).Contains(task.Name))
+                {
+                    _apiHelper.AddTaskToTrello(task.ListId ?? DefaultListId, task.Name, task.Desc);
+                }
+            }
         }
     }
 }

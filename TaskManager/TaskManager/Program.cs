@@ -1,4 +1,6 @@
-﻿class Program
+﻿using TaskManager;
+
+class Program
 {
     static void Main()
     {

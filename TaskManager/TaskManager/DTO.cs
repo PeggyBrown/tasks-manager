@@ -2,20 +2,24 @@ using System.Collections.Generic;
 
 namespace TaskManager
 {
-    class Board
+    class TrelloBoard
     {
         public string Name { get; set; }
-        public List<ListObject> Lists { get; set; }
+        public List<TrelloList> Lists { get; set; }
     }
 
-    class ListObject
+    class TrelloList
     {
+        public string Id { get; set; }
         public string Name { get; set; }
-        public List<TaskObject> Tasks { get; set; }
+        public List<TrelloTask> Tasks { get; set; }
     }
 
-    class TaskObject
+    class TrelloTask
     {
+        public string Id { get; set; }
         public string Name { get; set; }
+        public string ListId { get; set; }
+        public string Desc { get; set; }
     }
 }

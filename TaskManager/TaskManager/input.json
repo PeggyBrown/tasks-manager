@@ -5,10 +5,12 @@
       "Name": "Backlog",
       "Tasks": [
         {
-          "Name": "Task 1"
+          "Name": "Task Reader unit test 5",
+          "Desc": "Write unit test for Task Reader"
         },
         {
-          "Name": "Task 2"
+          "Name": "Task Reader unit test 4",
+          "Desc": "Write unit test for Task Reader"
         }
       ]
     },
@@ -16,10 +18,12 @@
       "Name": "Design",
       "Tasks": [
         {
-          "Name": "Task 3"
+          "Name": "Task Reader unit test 2",
+          "Desc": "Write unit test for Task Reader"
         },
         {
-          "Name": "Task 4"
+          "Name": "Task Reader unit test 3",
+          "Desc": "Write unit test for Task Reader"
         }
       ]
     },
@@ -27,7 +31,8 @@
       "Name": "Done",
       "Tasks": [
         {
-          "Name": "Task 5"
+          "Name": "Task Reader unit test 1",
+          "Desc": "Write unit test for Task Reader"
         }
       ]
     }
