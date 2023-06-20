@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace TaskManager
 {
-    class ApiHelper
+    public class ApiHelper
     {
         private readonly string _apiKey;
         private readonly string _apiToken;

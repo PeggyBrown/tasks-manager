@@ -1,17 +1,16 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 
 namespace TaskManager
 {
-    class TasksReader
+    public class TasksManager
     {
         private readonly ApiHelper _apiHelper;
+        private readonly FilesHelper _filesHelper;
         private const string BoardId = "64905ce37ca84c01968da431";
         private const string DefaultListId = "64905ce37ca84c01968da438";
-        private const string JsonFilePath = "input.json";
         private static readonly List<string> TasksToLeave = new List<string>(){
             "64905ce37ca84c01968da4c4", 
             "64905ce37ca84c01968da4c6", 
@@ -23,14 +22,15 @@ namespace TaskManager
             "649169edf1024f64920a2f36"
         };
 
-        public TasksReader(ApiHelper apiHelper)
+        public TasksManager(ApiHelper apiHelper, FilesHelper filesHelper)
         {
             _apiHelper = apiHelper;
+            _filesHelper = filesHelper;
         }
 
-        public void PrepareTasksFromFile()
+        public bool PrepareTasksFromFile()
         {
-            string json = File.ReadAllText(JsonFilePath);
+            string json = _filesHelper.GetTasksInput();
 
             try
             {
@@ -38,11 +38,10 @@ namespace TaskManager
 
                 var allTasksFromBoard = _apiHelper.ReadAllTasksFromBoard(BoardId).Result;
                 var allListsFromBoard = _apiHelper.ReadAllListsFromBoard(BoardId).Result;
-
                 var inputLists = trelloBoard?.Lists;
-                inputLists.ForEach(t => t.Id = allListsFromBoard.FirstOrDefault(l => l.Name.Equals(t.Name))?.Id);
-                inputLists.ForEach(l =>
-                    l.Tasks.ForEach(t => t.ListId = l.Id));
+                
+                AssignListIdsToListsAndTasks(inputLists, allListsFromBoard);
+                
                 var tasksFromFile = inputLists.SelectMany(l => l.Tasks).ToList();
                 CreateMissingTasks(tasksFromFile, allTasksFromBoard);
                 HandleObsoleteTasks(allTasksFromBoard, tasksFromFile, true);
@@ -50,7 +49,17 @@ namespace TaskManager
             catch (JsonException ex)
             {
                 Console.WriteLine("Error parsing JSON: " + ex.Message);
+                return false;
             }
+
+            return true;
+        }
+
+        private static void AssignListIdsToListsAndTasks(List<TrelloList> inputLists, List<TrelloList> allListsFromBoard)
+        {
+            inputLists.ForEach(t => t.Id = allListsFromBoard.FirstOrDefault(l => l.Name.Equals(t.Name))?.Id);
+            inputLists.ForEach(l =>
+                l.Tasks.ForEach(t => t.ListId = l.Id));
         }
 
         private void HandleObsoleteTasks(List<TrelloTask> allTasksFromBoard, 

@@ -77,7 +77,7 @@
         <Compile Include="Logic\DTO.cs" />
         <Compile Include="Logic\FilesHelper.cs" />
         <Compile Include="Logic\RequestSender.cs" />
-        <Compile Include="Logic\TasksReader.cs" />
+        <Compile Include="Logic\TasksManager.cs" />
         <Compile Include="Program.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>

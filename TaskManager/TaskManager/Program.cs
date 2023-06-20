@@ -4,7 +4,8 @@ class Program
 {
     static void Main()
     {
-        TasksReader tasksReader = new TasksReader(new ApiHelper(new RequestSender(), new FilesHelper()));
-        tasksReader.PrepareTasksFromFile();
+        var filesHelper = new FilesHelper();
+        TasksManager tasksManager = new TasksManager(new ApiHelper(new RequestSender(), filesHelper), filesHelper);
+        tasksManager.PrepareTasksFromFile();
     }
 }

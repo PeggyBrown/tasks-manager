@@ -5,6 +5,8 @@ namespace TaskManager
 {
     public class FilesHelper
     {
+        
+        private const string JsonFilePath = "input.json";
         private readonly string _apiKey;
         private readonly string _apiToken;
 
@@ -23,6 +25,11 @@ namespace TaskManager
         public string GetApiToken()
         {
             return _apiToken;
+        }
+
+        public string GetTasksInput()
+        {
+            return File.ReadAllText(JsonFilePath);
         }
     }
 }
