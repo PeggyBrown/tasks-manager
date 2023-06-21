@@ -23,18 +23,10 @@ namespace TaskManager
         {
             using (WebClient client = new WebClient())
             {
-                try
-                {
-                    byte[] response = client.UploadValues(createCardUrl, "POST", data);
-                    string responseString = Encoding.UTF8.GetString(response);
-                    Console.WriteLine("Card created successfully:");
-                    Console.WriteLine(responseString);
-                }
-                catch (WebException ex)
-                {
-                    Console.WriteLine("An error occurred:");
-                    Console.WriteLine(ex.Message);
-                }
+                byte[] response = client.UploadValues(createCardUrl, "POST", data);
+                string responseString = Encoding.UTF8.GetString(response);
+                Console.WriteLine("Card created successfully:");
+                Console.WriteLine(responseString);
             }
         }
 
@@ -42,52 +34,37 @@ namespace TaskManager
         {
             using (HttpClient client = new HttpClient())
             {
-                try
+                HttpResponseMessage response = await client.GetAsync(apiUrl);
+
+                if (response.IsSuccessStatusCode)
                 {
-                    HttpResponseMessage response = await client.GetAsync(apiUrl);
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    List<TrelloTask> tasks = JsonConvert.DeserializeObject<List<TrelloTask>>(responseBody);
 
-                    if (response.IsSuccessStatusCode)
-                    {
-                        string responseBody = await response.Content.ReadAsStringAsync();
-                        List<TrelloTask> tasks = JsonConvert.DeserializeObject<List<TrelloTask>>(responseBody);
-
-                        return tasks;
-                    }
-
-                    Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                    return tasks;
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"An error occurred: {ex.Message}");
-                }
+
+                Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
             }
 
             return new List<TrelloTask>();
-
         }
 
         public async Task<List<TrelloList>> SendGetAllListsRequest(string getListsUrl)
         {
             using (HttpClient client = new HttpClient())
             {
-                try
+                HttpResponseMessage response = await client.GetAsync(getListsUrl);
+
+                if (response.IsSuccessStatusCode)
                 {
-                    HttpResponseMessage response = await client.GetAsync(getListsUrl);
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    List<TrelloList> tasks = JsonConvert.DeserializeObject<List<TrelloList>>(responseBody);
 
-                    if (response.IsSuccessStatusCode)
-                    {
-                        string responseBody = await response.Content.ReadAsStringAsync();
-                        List<TrelloList> tasks = JsonConvert.DeserializeObject<List<TrelloList>>(responseBody);
-
-                        return tasks;
-                    }
-
-                    Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                    return tasks;
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"An error occurred: {ex.Message}");
-                }
+
+                Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
             }
 
             return new List<TrelloList>();
@@ -97,18 +74,10 @@ namespace TaskManager
         {
             using (WebClient client = new WebClient())
             {
-                try
-                {
-                    byte[] response = client.UploadValues(removeCardUrl, "DELETE", new NameValueCollection());
-                    string responseString = Encoding.UTF8.GetString(response);
-                    Console.WriteLine("Card removed successfully:");
-                    Console.WriteLine(responseString);
-                }
-                catch (WebException ex)
-                {
-                    Console.WriteLine("An error occurred:");
-                    Console.WriteLine(ex.Message);
-                }
+                byte[] response = client.UploadValues(removeCardUrl, "DELETE", new NameValueCollection());
+                string responseString = Encoding.UTF8.GetString(response);
+                Console.WriteLine("Card removed successfully:");
+                Console.WriteLine(responseString);
             }
         }
     }
