@@ -9,7 +9,15 @@ using Newtonsoft.Json;
 
 namespace TaskManager
 {
-    public class RequestSender
+    public interface IRequestSender
+    {
+        void SendPostRequest(string createCardUrl, NameValueCollection data);
+        Task<List<TrelloTask>> SendGetAllTasksRequest(string apiUrl);
+        Task<List<TrelloList>> SendGetAllListsRequest(string getListsUrl);
+        void SendDeleteRequest(string removeCardUrl);
+    }
+
+    public class RequestSender : IRequestSender
     {
         public void SendPostRequest(string createCardUrl, NameValueCollection data)
         {
@@ -91,7 +99,7 @@ namespace TaskManager
             {
                 try
                 {
-                    byte[] response = client.UploadValues(removeCardUrl, "DELETE",new NameValueCollection());
+                    byte[] response = client.UploadValues(removeCardUrl, "DELETE", new NameValueCollection());
                     string responseString = Encoding.UTF8.GetString(response);
                     Console.WriteLine("Card removed successfully:");
                     Console.WriteLine(responseString);

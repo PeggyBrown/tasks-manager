@@ -3,9 +3,16 @@ using Newtonsoft.Json.Linq;
 
 namespace TaskManager
 {
-    public class FilesHelper
+
+    public interface IFilesHelper
     {
-        
+         string GetApiKey();
+         string GetApiToken();
+         string GetTasksInput();
+    }
+    public class FilesHelper : IFilesHelper
+    {
+
         private const string JsonFilePath = "input.json";
         private readonly string _apiKey;
         private readonly string _apiToken;

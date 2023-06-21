@@ -7,8 +7,8 @@ namespace TaskManager
 {
     public class TasksManager
     {
-        private readonly ApiHelper _apiHelper;
-        private readonly FilesHelper _filesHelper;
+        private readonly IApiHelper _apiHelper;
+        private readonly IFilesHelper _filesHelper;
         private const string BoardId = "64905ce37ca84c01968da431";
         private const string DefaultListId = "64905ce37ca84c01968da438";
         private static readonly List<string> TasksToLeave = new List<string>(){
@@ -22,7 +22,7 @@ namespace TaskManager
             "649169edf1024f64920a2f36"
         };
 
-        public TasksManager(ApiHelper apiHelper, FilesHelper filesHelper)
+        public TasksManager(IApiHelper apiHelper, IFilesHelper filesHelper)
         {
             _apiHelper = apiHelper;
             _filesHelper = filesHelper;
@@ -36,13 +36,13 @@ namespace TaskManager
             {
                 TrelloBoard trelloBoard = JsonConvert.DeserializeObject<TrelloBoard>(json);
 
-                var allTasksFromBoard = _apiHelper.ReadAllTasksFromBoard(BoardId).Result;
-                var allListsFromBoard = _apiHelper.ReadAllListsFromBoard(BoardId).Result;
+                var allTasksFromBoard = _apiHelper.ReadAllTasksFromBoard(BoardId);
+                var allListsFromBoard = _apiHelper.ReadAllListsFromBoard(BoardId);
                 var inputLists = trelloBoard?.Lists;
                 
                 AssignListIdsToListsAndTasks(inputLists, allListsFromBoard);
                 
-                var tasksFromFile = inputLists.SelectMany(l => l.Tasks).ToList();
+                var tasksFromFile = inputLists?.SelectMany(l => l.Tasks).ToList();
                 CreateMissingTasks(tasksFromFile, allTasksFromBoard);
                 HandleObsoleteTasks(allTasksFromBoard, tasksFromFile, true);
             }
@@ -73,7 +73,7 @@ namespace TaskManager
                     Console.WriteLine("Obsolete task: " + task.Name);
                     if (shouldDeleteObsoleteTasks)
                     {
-                        _apiHelper.RemoveTaskFromTrello(task.Id);
+                        _apiHelper.RemoveTask(task.Id);
                     }
                 }
             }
@@ -85,7 +85,7 @@ namespace TaskManager
             {
                 if (!allTasksFromBoard.Select(t => t.Name).Contains(task.Name))
                 {
-                    _apiHelper.AddTaskToTrello(task.ListId ?? DefaultListId, task.Name, task.Desc);
+                    _apiHelper.AddTask(task.ListId ?? DefaultListId, task.Name, task.Desc);
                 }
             }
         }

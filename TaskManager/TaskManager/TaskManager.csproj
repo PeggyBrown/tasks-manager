@@ -73,7 +73,7 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="Logic\ApiHelper.cs" />
+        <Compile Include="Logic\IApiHelper.cs" />
         <Compile Include="Logic\DTO.cs" />
         <Compile Include="Logic\FilesHelper.cs" />
         <Compile Include="Logic\RequestSender.cs" />
