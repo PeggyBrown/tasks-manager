@@ -4,7 +4,7 @@ namespace TaskManagerTests
     {
         public int Sum(int a, int b)
         {
-            return 4;
+            return a+b;
         }
         
         public int Multiply(int a, int b)

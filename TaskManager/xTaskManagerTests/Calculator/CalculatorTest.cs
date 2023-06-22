@@ -1,29 +1,22 @@
-﻿using System;
-using FluentAssertions;
-using FsCheck;
-using FsCheck.Fluent;
-using FsCheck.Xunit;
+﻿using FluentAssertions;
 using TaskManagerTests;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace xTaskManagerTests
 {
     public class CalculatorTests
     {
         private readonly WeakCalculator _calculator = new WeakCalculator();
-        private readonly ITestOutputHelper _output;
-
-        public CalculatorTests(ITestOutputHelper output)
-        {
-            _output = output;
-        }
 
         [Fact]
         public void ShouldAddValuesCorrectly()
         {
-            var result = _calculator.Sum(2, 2);
-            Assert.Equal(4, result);
+            var result1 = _calculator.Sum(3, 2);
+            var result2 = _calculator.Sum(5, 10);
+            var result3 = _calculator.Sum(10000, 200);
+            Assert.Equal(5, result1);
+            Assert.Equal(15, result2);
+            Assert.Equal(10200, result3);
         }
 
         [Fact]
