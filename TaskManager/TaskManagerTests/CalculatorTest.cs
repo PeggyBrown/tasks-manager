@@ -15,6 +15,13 @@ namespace TaskManagerTests
         }
         
         [Test]
+        public void ShouldAddOtherValuesCorrectly()
+        {
+            var result = _calculator.Sum(2, 3);
+            Assert.AreEqual(5, result);
+        }
+        
+        [Test]
         public void ShouldMultiplyValuesCorrectly()
         {
             var result = _calculator.Multiply(2, 3);
